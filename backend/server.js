@@ -14,15 +14,15 @@ app.use(morgan('dev'))
 const mongoose=require('mongoose')
 app.use(
     cors({
-        origin:['http://localhost:3000'],
+        origin:['https://mankindmedicare.online'],
         methods:['GET','POST','PATCH'],
         credentials:true
     })
 )
 
-app.use('/api/client',clientRoutes)
-app.use('/api/admin',adminRoutes)
-app.use('/api/doctor',doctorRoutes)
+app.use('/backend/api/client',clientRoutes)
+app.use('/backend/api/admin',adminRoutes)
+app.use('/backend/api/doctor',doctorRoutes)
 
 
 
