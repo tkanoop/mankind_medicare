@@ -11,7 +11,7 @@ const login = async (email, password) => {
 setIsLoading(true)
 setError(null)
 try {
-  const response = await axios.post('/api/admin/login', { email, password })
+  const response = await axios.post('/api/backend/admin/login', { email, password })
 
   // handle success
   localStorage.setItem('admin', JSON.stringify(response.data))
