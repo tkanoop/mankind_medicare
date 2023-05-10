@@ -34,7 +34,7 @@ const BookingView = () => {
         }
     };
 
-    const handleEdit = async (id) => {
+    const handleEdit = async (id,booking) => {
         try {
              const confirmed = await Swal.fire({
                 icon: 'question',
@@ -44,10 +44,30 @@ const BookingView = () => {
                 cancelButtonText: 'No, cancel',
               });
         
-              if (confirmed.value === true) {
+            if (confirmed.value === true) {
+       const date=booking.date
+      
+        const currentTime = new Date();
         
+        const currentTimeSlot = `${currentTime.getHours()}:00 ${currentTime.getHours() >= 12 ? 'PM' : 'AM'}`;
+        const dates=new Date(date)
+        const selectedDateStr = dates.toLocaleDateString();
+    
+        const selectedDateTime = new Date(`${selectedDateStr} ${booking.starting_time}`);
+             
+               if (
+                selectedDateTime > new Date() ||
+                (selectedDateTime.toLocaleTimeString() === currentTimeSlot && selectedDateTime >= new Date())
+              ) {
             const response = await axios.get(`/api/doctor/cancelbooking/${id}`);
            getBooking()
+        } else {
+            // Show an error message or perform alternative action
+            Swal.fire({
+                icon: 'error',
+                text: 'Cannot cancel a booking with a past starting time.',
+            });
+        }
         }
      } catch (error) {
             
@@ -84,7 +104,7 @@ const BookingView = () => {
             cell: (row) => (
                 <>
                
-                <button onClick={()=>handleEdit(row._id)} className={`${row.status?"bg-green-700" : "bg-red-700"} px-2 py-1 text-white rounded-md w-[120px]`}
+                <button onClick={()=>handleEdit(row._id,row)} className={`${row.status?"bg-green-700" : "bg-red-700"} px-2 py-1 text-white rounded-md w-[120px]`}
 >
                     {row.status ? "Cancel":"Cancelled"}
 

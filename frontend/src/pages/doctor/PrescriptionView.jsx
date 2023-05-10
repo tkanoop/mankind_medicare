@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import axios from "../../instance/axios"
 
 import { ClipLoader } from 'react-spinners'
-import Swal from 'sweetalert2';
+
 import DoctorTopbar from '../../components/DoctorTopbar'
 import DocSideBar from '../../components/Docsidebar'
 import { useAuthContext } from '../../hooks/admin/useAuthContext';
@@ -19,8 +19,16 @@ const PrescriptionViews = () => {
   const [docName, setDocName] = useState("");
   const [clientName, setClientName] = useState("");
   const [date, setDate] = useState("")
-  const [medicine, setMedicine] = useState("");
-  const [disease, setDisease] = useState("");
+  const [diseaseone,setDiseaseone]=useState("")
+  const [diseasetwo,setDiseasetwo]=useState("")
+  const [medicineone, setMedicineone] = useState("");
+  const [medicinetwo, setMedicinetwo] = useState("");
+  const [firsttimes, setFirsttimes] = useState("");
+  const [firstdays, setFirstdays] = useState("");
+  
+  const [secondtimes, setSecondtimes] = useState("");
+  const [seconddays, setSeconddays] = useState("");
+  
   const [bookid, setBookid] = useState("")
 
   const [time, setTime] = useState("");
@@ -95,8 +103,15 @@ const PrescriptionViews = () => {
         clientName,
         time,
         date,
-        disease,
-        medicine,
+        diseaseone,
+        diseasetwo,
+        medicineone,
+        medicinetwo,
+        firsttimes,
+        firstdays,
+        secondtimes,
+        seconddays,
+
         bookid
 
       },
@@ -106,8 +121,10 @@ const PrescriptionViews = () => {
           Authorization: ` ${doctor.token}`,
         },
       }
-    );
-
+    )
+    if(response.data.message){
+      setModal(!modal)
+    }
     console.log(docName);
     console.log(clientName);
     console.log(time);
@@ -274,27 +291,103 @@ const PrescriptionViews = () => {
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label className="block font-normal " htmlFor="name">
-                          Disease
+                          Disease One
                         </label>
                         <input
                           type="text"
                           id="disease"
                           className="mt-1 bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
-                          value={disease}
-                          onChange={(e) => setDisease(e.target.value)}
+                         
+                          onChange={(e) => setDiseaseone(e.target.value)}
                           placeholder='Disease'
                         />
                       </div>
-                      <div className="w-full md:w-1/2 px-3">
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label className="block font-normal " htmlFor="name">
+                          Disease Two
+                        </label>
+                        <input
+                          type="text"
+                          id="disease"
+                          className="mt-1 bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                          
+                          onChange={(e) => setDiseasetwo(e.target.value)}
+                          placeholder='Disease'
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
                         <label className="block font-normal " htmlFor="Medicine">
-                          Medicine
+                          Medicine One
                         </label>
                         <input
                           type="text"
                           id="medicine"
                           className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
-                          value={medicine}
-                          onChange={(e) => setMedicine(e.target.value)}
+                        
+                          onChange={(e) => setMedicineone(e.target.value)}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Days
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          onChange={(e) => setFirstdays(e.target.value)}
+
+                        />
+                      </div> <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Times
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          onChange={(e) => setFirsttimes(e.target.value)}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Medicine Two
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                        
+                          onChange={(e) => setMedicinetwo(e.target.value)}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Days
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          onChange={(e) => setSeconddays(e.target.value)}
+
+                        />
+                      </div> <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Times
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                          
+                          onChange={(e) => setSecondtimes(e.target.value)}
 
                         />
                       </div>
@@ -381,27 +474,103 @@ const PrescriptionViews = () => {
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label className="block font-normal " htmlFor="name">
-                          Disease
+                          Disease One
                         </label>
                         <input
                           type="text"
                           id="disease"
                           className="mt-1 bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
-                          value={prescription.disease}
                          
+                          value={prescription.diseaseone}
                           placeholder='Disease'
                         />
                       </div>
-                      <div className="w-full md:w-1/2 px-3">
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label className="block font-normal " htmlFor="name">
+                          Disease Two
+                        </label>
+                        <input
+                          type="text"
+                          id="disease"
+                          className="mt-1 bg-gray-50 border  border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                          
+                          value={prescription.diseasetwo}
+                          placeholder='Disease'
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
                         <label className="block font-normal " htmlFor="Medicine">
-                          Medicine
+                          Medicine One
                         </label>
                         <input
                           type="text"
                           id="medicine"
                           className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
-                          value={prescription.medicine}
+                        
+                          value={prescription.medicineone}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Days
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          value={prescription.firsttimes}
+
+                        />
+                      </div> <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Times
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          value={prescription.firstdays}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Medicine Two
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                        
+                          value={prescription.medicinetwo}
+
+                        />
+                      </div>
+                      <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Days
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
+                       
+                          value={prescription.seconddays}
+
+                        />
+                      </div> <div className="w-full md:w-1/3 px-3">
+                        <label className="block font-normal " htmlFor="Medicine">
+                          Times
+                        </label>
+                        <input
+                          type="text"
+                          id="medicine"
+                          className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none block w-full p-2.5"
                           
+                          value={prescription.secondtimes}
 
                         />
                       </div>

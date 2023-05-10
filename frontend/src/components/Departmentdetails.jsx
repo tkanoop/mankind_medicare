@@ -22,7 +22,7 @@ const RoundCard = ({ department, content, image,id }) => {
         {department}
         </h3>
         <Link
-        to={`/doctor?department=${id}`}
+        to={`/doctordetails?department=${id}`}
         className="mt-4 text-white text-sm ml-2 uppercase bg-teal-900 p-3"
       >
         Book Appointment

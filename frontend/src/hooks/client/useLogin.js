@@ -11,7 +11,7 @@ const login = async (mobile, password) => {
 setIsLoading(true)
 setError(null)
 try {
-  const response = await axios.post('/api/backend/client/login', { mobile, password })
+  const response = await axios.post('/api/client/login', { mobile, password })
 
   // handle success
   localStorage.setItem('client', JSON.stringify(response.data))

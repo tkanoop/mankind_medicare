@@ -9,8 +9,9 @@ function App() {
     <>
       <BrowserRouter>
         <AdminRoutes />
-        <ClientRoutes />
+        
         <DoctorRoutes />
+        <ClientRoutes />
       </BrowserRouter>
     </>
   );

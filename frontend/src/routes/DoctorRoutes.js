@@ -9,18 +9,20 @@ import Profile from "../pages/doctor/Profile";
 import PrescriptionViews from "../pages/doctor/PrescriptionView";
 import ClientView from "../pages/doctor/ClientView";
 import BookingView from "../pages/doctor/BookingView";
+import ErrorPage from "../pages/doctor/ErrorPage";
 
 
 function DoctorRoutes() {
   const {doctor} = useAuthContext()
   return (
     <Routes>
-      <Route path="/doctor/login" element={!doctor ? <DocLogin /> : <Navigate to ={'/doctor/profile'}/> } />
+      <Route exact path="/doctor/login" element={!doctor ? <DocLogin /> : <Navigate to ={'/doctor/profile'}/> } />
       
-      <Route path="/doctor/profile" element={doctor ? <Profile /> : <Navigate to = {'/doctor/login'}/>}/>
-      <Route path="/doctor/PrescriptionView" element={doctor ? <PrescriptionViews  /> : <Navigate to ={'/doctor/login'}/>} />
-      <Route path="/doctor/ClientView" element={doctor ? <ClientView /> : <Navigate to ={'/doctor/login'}/>} />
-      <Route path="/doctor/BookingView" element={doctor ? <BookingView/>: <Navigate to ={'/doctor/login'}/>} />
+      <Route exact path="/doctor/profile" element={doctor ? <Profile /> : <Navigate to = {'/doctor/login'}/>}/>
+      <Route exact path="/doctor/PrescriptionView" element={doctor ? <PrescriptionViews  /> : <Navigate to ={'/doctor/login'}/>} />
+      <Route exact path="/doctor/ClientView" element={doctor ? <ClientView /> : <Navigate to ={'/doctor/login'}/>} />
+      <Route exact path="/doctor/BookingView" element={doctor ? <BookingView/>: <Navigate to ={'/doctor/login'}/>} />
+      <Route exact path="/doctor/*" element={<ErrorPage />} />
     </Routes>
   );
 }

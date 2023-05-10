@@ -5,7 +5,7 @@ const ErrorPage = () => {
   const navigate = useNavigate();
 
   const goBackToHome = () => {
-    navigate('/admin');
+    navigate('/');
   };
 
   return (

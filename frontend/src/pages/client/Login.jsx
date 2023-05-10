@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import Nav from "../../components/nav";
-import axios from "../../instance/axios";
+
 import {ToastContainer, toast} from "react-toastify"
 import { NavLink, useNavigate } from "react-router-dom";
 import {useLogin} from "../../hooks/client/useLogin"
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuthContext } from "../../hooks/admin/useAuthContext";
-
+import clientLoginValidation from "../../Validation/client/clientLoginValidation"
 
 
 
@@ -39,12 +39,42 @@ export default function Login() {
    
 
     const clientLogin = async (e) => {
+        try {
         e.preventDefault();
-        await login(mobile,password)
+        const formData = new FormData();
+        formData.append('mobile', mobile);
+        formData.append('password', password);
+         const data = Object.fromEntries(formData.entries());
+clientLoginValidation.validate(data)
+.then(async () =>{
+   
         
+    
+   const response= await login(mobile,password)
+   
 
-  
 
+})
+.catch((validationErrors) => {
+    toast.error(validationErrors.message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  });   
+
+}catch (error) {
+    toast.error("Please enter valid Credentials"
+        
+      );
+  }
+      
+        
 
     };
 

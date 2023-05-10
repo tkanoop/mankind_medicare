@@ -108,11 +108,12 @@ module.exports = {
   },
   prescriptionAdding:async(req,res) =>{
     console.log("hhh");
-    const {docName,clientName,time,date,disease,medicine,bookid} = req.body
-    console.log(bookid);
+    const {docName,clientName,time,date,diseaseone,diseasetwo,medicineone
+      ,medicinetwo,firstdays,firsttimes,seconddays,secondtimes,bookid} = req.body
+    console.log(diseasetwo);
     const presExist = await Prescription.findOne({bookingid:bookid})
     if(presExist){
-      res.json({message:"Prescription already added"})
+      res.json({mes:"Prescription already added"})
       console.log("dfgfgddfg"+presExist);
 
     }else{
@@ -122,8 +123,14 @@ module.exports = {
       doctorName:docName,
       date:date,
       starting_time:time,
-      disease:disease,
-      medicine:medicine
+      diseaseone:diseaseone,
+      diseasetwo:diseasetwo,
+      medicineone:medicineone,
+      medicinetwo:medicinetwo,
+      firsttimes:firsttimes,
+      firstdays:firstdays,
+      secondtimes:secondtimes,
+      seconddays:seconddays
 
     })
   

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from '../../instance/axios'
 import AdminNavbar from '../../components/Sidebar'
 import { useNavigate } from 'react-router-dom'
-import { AddDoctorAPI } from '../../services/api'
+
 import {ToastContainer, toast} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import AdminTopbar from '../../components/AdminTopbar'

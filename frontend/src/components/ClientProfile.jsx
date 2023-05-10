@@ -2,7 +2,7 @@ import React from 'react';
 import { useState,useEffect } from 'react';
 import { useAuthContext } from '../hooks/admin/useAuthContext';
 import axios from "../instance/axios"
-
+import Swal from 'sweetalert2';
 const ClientProfile = () => {
   const {client}=useAuthContext()
   const[user,setUser]=useState([])
@@ -45,14 +45,62 @@ const ClientProfile = () => {
     }
     
   }
-  const handleEdit =async (id)=>{
-    const response = axios.get(`/api/client/cancelBooking/${id}`,{
-      headers:{
-        'Authorization' : `${client.token}`
-      }
-    })
+  const handleEdit =async (id,booking)=>{
+    try {
+      const confirmed = await Swal.fire({
+          icon: 'question',
+          text: 'Are you sure you want to cancel this booking?',
+          showCancelButton: true,
+          confirmButtonText: 'Yes!',
+          cancelButtonText: 'No, cancel',
+      });
+
+      if (confirmed.value === true) {
+       const fdate=booking.date
+       const parts = fdate.split("/");
+       const day = parts[1];
+       const month = parts[0];
+       const year = parts[2];
+       const date = `${day}/${month}/${year}`
+    
+      
+        const currentTime = new Date();
+        
+        const currentTimeSlot = `${currentTime.getHours()}`;
+       
+        const dates=new Date(date)
+        
+        
+        const selectedDateStr = dates.toLocaleDateString();
+    
+        const selectedDateTime = new Date(`${selectedDateStr} ${booking.starting_time}`);
+        const hours = selectedDateTime.getHours();
+      
+       const diff =(currentTimeSlot-hours)
+       
+       const data =new Date()
+           
+              if ( (selectedDateTime>data && diff >= 1  )) {
+          
+    const response =await axios.get(`/api/client/cancelBooking/${id}`)
+      
     fetchBooking()
-  }
+ 
+ } else {
+  // Show an error message or perform alternative action
+  Swal.fire({
+      icon: 'error',
+      text: 'Booking Must be Cancelled Atleast One Hour BeFore Booked Time.',
+  });
+}
+      }
+} catch (error) {
+
+}
+};
+
+
+  
 
   
   const viewPrescription = async (id) => {
@@ -119,7 +167,7 @@ const ClientProfile = () => {
                   <td className="text-center py-2">{bookingItem.date}</td>
                   <td className="text-center py-2">{bookingItem.starting_time}</td>
                   <td className="text-center py-2">
-                    <button  onClick={()=>handleEdit(bookingItem._id)} className={`${bookingItem.status?"bg-green-700" : "bg-red-700"} text-white px-4 py-2 rounded-md w-[120px]`}>
+                    <button  onClick={()=>handleEdit(bookingItem._id,bookingItem)} className={`${bookingItem.status?"bg-green-700" : "bg-red-700"} text-white px-4 py-2 rounded-md w-[120px]`}>
                     {bookingItem.status ? "Cancel" : "Cancelled"}
                     </button>
                   </td>

@@ -2,6 +2,7 @@
 import BaseTable from '../../components/baseTable'
 import React, { useEffect, useState } from 'react'
 
+
 import axios from "../../instance/axios"
 import AdminNavbar from '../../components/Sidebar'
 import { Await, NavLink } from 'react-router-dom'
@@ -139,3 +140,5 @@ const DoctorView = () => {
 }
 
 export default DoctorView
+
+

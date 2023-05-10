@@ -28,14 +28,36 @@ const prescriptionSchema = Schema({
     
    
   },
-  disease:{
+  diseaseone:{
     type:String,
-    required:true
+   
   },
-  medicine:{
+  diseasetwo:{
     type:String,
-    required:true
+    
+  },
+  medicineone:{
+    type:String,
+   
+  },
+  firsttimes:{
+    type:String
+  },
+  firstdays:{
+    type:String
+  },
+  medicinetwo:{
+    type:String
+  },
+  secondtimes:{
+    type:String
+   
+
+  },
+  seconddays:{
+    type:String
   }
+
 
  
 });

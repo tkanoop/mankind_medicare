@@ -177,8 +177,7 @@ module.exports = {
 
       const date = req.body.date;
       const time = req.body.time;
-      console.log(time);
-
+  
       const doctor = await Doctor.findById({ _id: id });
       const department = await Department.findById({ _id: departmentid });
       const client = await Client.findById({ _id: _id });
@@ -193,6 +192,8 @@ module.exports = {
         res.json({ success: "Booked succesfully" });
       });
       console.log("booked");
+
+
     } catch (error) {
       console.log(error);
     }

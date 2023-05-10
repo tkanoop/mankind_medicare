@@ -22,6 +22,9 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
     '4:00 PM',
     '5:00 PM'
   ];
+  const handleSelectTime = async (time) => {
+    setSelectedTime(time);
+  };
 
   const getCurrentTimeSlot = () => {
     const currentTime = new Date();
@@ -29,13 +32,11 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
     return currentTimeSlot;
   };
 
-  const handleSelectTime = async (time) => {
-    setSelectedTime(time);
-  };
 
   const isTimeSlotAvailable = (time) => {
     const currentTimeSlot = getCurrentTimeSlot();
     const selectedDateStr = selectedDate.toLocaleDateString();
+    console.log(selectedDate);
     const selectedDateTime = new Date(`${selectedDateStr} ${time}`);
     return selectedDateTime > new Date() || (selectedDateTime.toLocaleTimeString() === currentTimeSlot && selectedDateTime >= new Date());
   };

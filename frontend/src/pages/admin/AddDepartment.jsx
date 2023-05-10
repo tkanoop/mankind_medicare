@@ -12,13 +12,16 @@ import {ToastContainer, toast} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import AdminTopbar from "../../components/AdminTopbar";
-import { AddDepartmentAPI } from "../../services/api";
+
 import addDepartmentValidation from "../../Validation/admin/addDepartmentValidation";
-import Swal from 'sweetalert2';
+import axios from "../../instance/axios"
+import { useAuthContext } from "../../hooks/admin/useAuthContext";
+
 
 
 const AddDepartment = () => {
     const Navigate=useNavigate()
+    const {admin}=useAuthContext()
     const[department,setDepartment]=useState('')
     const[image,setImage] =useState('')
 
@@ -46,7 +49,12 @@ const AddDepartment = () => {
 
         addDepartmentValidation.validate(data)
         .then(async (validatedData) =>{
-            const response = await AddDepartmentAPI(validatedData);
+            const response = await axios.post('/api/admin/addDepartment',validatedData,{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `${admin.token}`
+                  },
+            });
 
        
            
