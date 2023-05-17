@@ -38,7 +38,6 @@ app.use('/backend/api/client',clientRoutes)
 app.use('/backend/api/admin',adminRoutes)
 app.use('/backend/api/doctor',doctorRoutes)
 
-
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
