@@ -4,13 +4,29 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState,useEffect } from "react";
 import axios from'../instance/axios'
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useAuthContext } from "../hooks/admin/useAuthContext";
 import { ClipLoader } from 'react-spinners';
 
 
 
-const RoundCard = ({ title, content, image,id,departmentId }) => {
+const RoundCard = ({ title, content, image,id,departmentId ,time,speciality}) => {
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    const state = {
+      id,
+      title,
+      image,
+      content,
+      departmentId,
+      time,
+      speciality
+    };
+
+    navigate('/doctorbooking', { state });
+  };
   return (
     <div className=" rounded-lg bg-white p-8 mx-2 text-center " >
       <img src={image} alt="Card Image" className="rounded-full mx-auto" style={{ height: "200px", width: "200px", borderRadius: "50%" }} />
@@ -18,14 +34,12 @@ const RoundCard = ({ title, content, image,id,departmentId }) => {
       <p className="text-blue-500 mb-4">{content}</p>
     
       
-      <Link
-        
-          to={`/doctorbooking?department=${departmentId}&id=${id}`}
-       
+      <button
+        onClick={handleClick}
         className="mt-4 text-white text-sm ml-2 uppercase bg-teal-900 p-3"
       >
         Book Now
-      </Link>
+      </button>
       
     </div>
   );
@@ -48,9 +62,9 @@ const DepartmentDoctors = ({ id1 }) => {
           'Authorization': ` ${client.token}`
         }
         })
-        const {tokenverified,statusverified,details}=response.data
+        const {tokenverified,statusverified,responseData}=response.data
         if(tokenverified&&statusverified){
-          setDoctor(details);
+          setDoctor(responseData);
         }
         else{
           navigate('/login')
@@ -130,6 +144,8 @@ const DepartmentDoctors = ({ id1 }) => {
                 image={card.image}
                 id={card._id}
                 departmentId={id1}
+                time={card.timeslots}
+                speciality={card.speciality}
               />
             </div>
           ))}

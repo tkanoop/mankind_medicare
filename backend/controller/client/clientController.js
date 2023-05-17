@@ -6,6 +6,7 @@ const Booking = require("../../models/booking");
 const Prescription=require("../../models/prescription")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const moment = require('moment');
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
@@ -114,11 +115,19 @@ module.exports = {
   getDoctors: async (req, res) => {
     try {
       const doctors = await Doctor.find({ status: true });
-      res.json(doctors);
+  
+      const responseData = doctors.map((doctor) => {
+        const { password, email, mobile, ...data } = doctor.toObject();
+        return data;
+      });
+  
+      res.json(responseData);
     } catch (error) {
-      console.log("error");
+      console.log(error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-  },
+  }
+  ,
   getDoctorsByDepartment: async (req, res) => {
     try {
       const id = req.params.id;
@@ -129,8 +138,12 @@ module.exports = {
       const details = await Doctor.find({
         $and: [{ department: departments.department }, { status: true }],
       });
-      res.json({ tokenverified: true, statusverified: true, details });
-      console.log(details);
+      const responseData = details.map((doctor) => {
+        const { password, email, mobile, ...data } = doctor.toObject();
+        return data;
+      });
+      res.json({ tokenverified: true, statusverified: true, responseData });
+     
     } catch (error) {
       console.log("error");
     }
@@ -161,7 +174,47 @@ module.exports = {
     try {
       const id = req.params.id;
       const doctor = await Doctor.findById({ _id: id });
-      res.json(doctor);
+      const date = req.body.date;
+
+
+const currentTime = new Date(); 
+const currentHour = currentTime.getHours(); 
+const currentMinute = currentTime.getMinutes(); 
+
+
+const [day, month, year] = date.split('/').map(Number);
+const selectedDate = new Date(year, month - 1, day); 
+
+
+const availableTimeslots = doctor.timeslots.filter(timeslot => {
+  const [hour, minute] = timeslot.split(':').map(Number);
+  let convertedHour = hour;
+  if (hour < 12 && timeslot.includes('PM')) {
+    convertedHour += 12;
+  } else if (hour === 12 && timeslot.includes('AM')) {
+    convertedHour = 0;
+  }
+
+  // Compare the hours and minutes only
+  if (
+    (selectedDate.getTime() > currentTime.getTime()) ||
+    (selectedDate.getTime() < currentTime.getTime() && convertedHour > currentHour) ||
+    (selectedDate.getTime() === currentTime.getTime() && convertedHour === currentHour && minute > currentMinute)
+  ) {
+    return true; 
+  }
+  
+  return false; 
+});
+
+
+
+
+  
+      const { password, email, mobile, ...responseData } = doctor.toObject();
+  
+      responseData.timeslots = availableTimeslots; 
+      res.json(responseData);
     } catch (error) {}
   },
   postbooking: async (req, res) => {
@@ -187,7 +240,10 @@ module.exports = {
         department_id: department.department,
         date: date,
         starting_time: time,
+        timebooked:[]
+
       });
+      newBooking.timebooked.push(time)
       await newBooking.save().then(() => {
         res.json({ success: "Booked succesfully" });
       });
@@ -213,20 +269,58 @@ module.exports = {
     const { _id } = jwt.verify(token, process.env.SECRET);
     console.log(_id);
     const user = await Client.findById({_id:_id})
-    const booking = await Booking.find({client_id:user.name})
+    const booking = await Booking.find({ client_id: user.name }).sort({date:-1, starting_time:1})
+    
     console.log(booking);
     res.json(booking)
   },
   cancelBooking: async (req,res)=>{
     const id = req.params.id
-    console.log(id);
+    time =req.body.time
+    date=req.body.date
+    
+   
     const booking= await Booking.findById({_id:id})
  
     console.log(booking.status);
     if(booking.status===true){
-      await Booking.findByIdAndUpdate(id,{$set:{status:false}})
-      res.json({success:true})
-  }
+      const currentDate = moment().format('DD/MM/YYYY')
+      const requestedDate = moment(date, 'DD/MM/YYYY').format('DD/MM/YYYY')
+      const requestedTime = moment(time, 'hh:mm A').format('HH:mm')
+      const timeNumber = parseInt(requestedTime.replace(':', ''), 10)
+      
+      
+      
+      
+      
+      const currentTime = moment().format('HH:mm');
+      const currenttimeNumber = parseInt(currentTime.replace(':', ''), 10)
+     
+    
+      
+      const timeDifferenceHours = timeNumber - currenttimeNumber;
+
+console.log(timeDifferenceHours);
+console.log(currentDate);
+console.log(requestedDate);
+
+      
+      
+      // Check if the requested date is in the future and the time difference is greater than or equal to 1 hour
+      if (moment(currentDate, 'DD/MM/YYYY').isBefore(moment(requestedDate, 'DD/MM/YYYY')) || (requestedDate==currentDate && timeDifferenceHours >= 100)) {
+        // Perform the cancellation process
+        await Booking.findByIdAndUpdate(id, {
+          $set: { status: false },
+          $pull: { timebooked: req.body.time }
+        });
+        res.json({ success: true });
+      } else {
+        res.json({ success: false, message: 'Cancellation Must Be Atleast One Hour Before Booked Time' });
+      }
+
+
+
+    }
 },
 getPrescription: async (req,res)=>{
   const id=req.params.id
@@ -234,5 +328,33 @@ getPrescription: async (req,res)=>{
   const prescription = await Prescription.findOne({bookingid:id})
   console.log(prescription);
   res.json(prescription)
-}
+},
+bookedtimes:  async (req, res) => {
+  try {
+    const id = await Doctor.findById({ _id: req.params.id });
+    
+
+    const date = req.body.date;
+    console.log(date);
+    console.log(id.name);
+
+
+    let booked = await Booking.find({
+      $and: [{ date: date }, { doctor_id: id.name }],
+    });
+    console.log(booked);
+
+
+    if (booked) {
+      const bookedTimes = booked.map(booking => booking.timebooked).flat();
+      res.json({ message: "Already Booked", bookedTimes });
+      console.log(bookedTimes);
+    } else {
+      res.json({ success: true });
+      console.log("available");
+    }
+  } catch (error) {
+    // Handle the error appropriately
+  }
+},
 }

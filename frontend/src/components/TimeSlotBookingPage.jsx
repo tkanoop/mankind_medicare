@@ -11,7 +11,7 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 
 
-const TimeSlotBookingPage = ({ id, departmentid }) => {
+const TimeSlotBookingPage = ({ id, departmentid,title,image,content,departmentId,time,speciality }) => {
   const { client } = useAuthContext()
   console.log(client);
   console.log(departmentid)
@@ -21,6 +21,9 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
   const [doctor, setDoctor] = useState([])
   const [amount,setAmount] = useState(1)
   const [modal,setModal] = useState(false)
+  const [timeslots,setTimeslots] = useState([])
+  const [bookedtimes,setBookedtimes] = useState([null])
+  const [commonSlots, setCommonSlots] = useState([]);
   
 
 
@@ -38,21 +41,17 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
   };
 
 
-  const timeSlots = [
-    '9:00 AM',
-    '10:00 AM',
-    '11:00 AM',
-    '12:00 PM',
-    '1:00 PM',
-    '2:00 PM',
-    '3:00 PM',
-    '4:00 PM',
-    '5:00 PM'
-  ];
+ 
 
   const getdoctor = async () => {
     console.log("gfhdhf");
-    const response = await axios.get(`/api/client/getdoctor/${id}`, {
+    const response = await axios.post(`/api/client/getdoctor/${id}`, 
+    {
+      date: selectedDate.toLocaleDateString('en-GB'),
+      time: time,
+    },
+    
+    {
 
       headers: {
         Authorization: ` ${client.token}`,
@@ -60,26 +59,55 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
 
     })
     console.log(response.data);
-    setDoctor(response.data)
+    
+    setTimeslots(response.data.timeslots)
 
   }
-
+ 
 
   useEffect(() => {
 
+
     getdoctor()
-  }, [])
-  const getCurrentTimeSlot = () => {
-    const currentTime = new Date();
-    const currentTimeSlot = `${currentTime.getHours()}:00 ${currentTime.getHours() >= 12 ? 'PM' : 'AM'}`;
-    return currentTimeSlot;
-  };
-  const isTimeSlotAvailable = (time) => {
-    const currentTimeSlot = getCurrentTimeSlot();
-    const selectedDateStr = selectedDate.toLocaleDateString();
-    const selectedDateTime = new Date(`${selectedDateStr} ${time}`);
-    return selectedDateTime > new Date() || (selectedDateTime.toLocaleTimeString() === currentTimeSlot && selectedDateTime >= new Date());
-  };
+  }, [selectedDate])
+
+useEffect(() =>{
+ getTime()
+
+},[selectedDate])
+
+useEffect(() => {
+  // Update common slots whenever either bookedtimes or timeslots change
+  
+  const common = bookedtimes.filter(time => timeslots.includes(time));
+  setCommonSlots(common);
+
+}, [bookedtimes, timeslots]);
+
+
+const getTime =async (time) =>{
+  const response = await axios.post(
+    `/api/client/bookingtime/${id}/${departmentid}`,
+    {
+      date: selectedDate.toLocaleDateString('en-GB'),
+      time: time,
+    },
+    {
+      headers: {
+        Authorization: ` ${client.token}`,
+      },
+    }
+  );
+  const {message,bookedTimes}=response.data
+  setBookedtimes(bookedTimes)
+
+
+}
+
+
+
+
+ 
 
 
   const handleSelectTime = async (time) => {
@@ -165,11 +193,11 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
       <div className="hidden sm:block">
         <div className=" rounded-lg bg-gray-200 p-8 mx-2 text-center mt-8 ">
 
-          <img src={doctor.image} alt="Card Image" className="rounded-full mx-auto " style={{ height: "200px", width: "200px", borderRadius: "50%" }} />
-          <h3 className="text-xl font-semibold  mt-4 ">NAME:  {doctor.name}</h3>
-          <p className="text-gray-900 font-medium mt-3">DEPARTMENT:  {doctor.department}</p>
+          <img src={image} alt="Card Image" className="rounded-full mx-auto " style={{ height: "200px", width: "200px", borderRadius: "50%" }} />
+          <h3 className="text-xl font-semibold  mt-4 ">NAME:  {title}</h3>
+          <p className="text-gray-900 font-medium mt-3">DEPARTMENT:  {content}</p>
           <h3 className=" font-medium mt-3">
-           SPECIALITY:  {doctor.speciality}
+           SPECIALITY:  {speciality}
           </h3>
           <h3 className=" font-medium mt-3">
            FEE:  1 $
@@ -193,17 +221,20 @@ const TimeSlotBookingPage = ({ id, departmentid }) => {
           </div>
           <div className="grid grid-cols-3 gap-4">
             
-              {timeSlots.map(time => (
-                isTimeSlotAvailable(time) &&
-                  <button
-                    key={time}
-                    className={`py-2 px-4 rounded-lg border-2 ${selectedTime === time ? 'bg-gray-200' : 'border-gray-400 hover:bg-gray-200'} ${!isTimeSlotAvailable(time) && 'text-gray-500 bg-red-300'} transition-colors duration-150`}
-                    onClick={() => handleSelectTime(time)}
-                  >
-                    {time}
-                   
-                  </button>
-              ))}
+          {timeslots.map(time => (
+          <button
+            key={time}
+            className={`py-2 px-4 rounded-lg border-2 border-gray-400 ${
+              commonSlots.includes(time) ? 'bg-red-600 cursor-not-allowed' : 'hover:bg-gray-200'
+            }`}
+            onClick={() => handleSelectTime(time)}
+            disabled={commonSlots.includes(time)}
+          >
+            {time}
+          </button>
+        ))}
+
+
              
             </div>
           {modal && (

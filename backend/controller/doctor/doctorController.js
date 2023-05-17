@@ -106,6 +106,8 @@ module.exports = {
     console.log(booking);
     res.json(booking)
   },
+
+
   prescriptionAdding:async(req,res) =>{
     console.log("hhh");
     const {docName,clientName,time,date,diseaseone,diseasetwo,medicineone
@@ -144,7 +146,7 @@ console.log("succesfully added");
   getPrescription:async(req,res) =>{
     
     const id =req.params.id
-    console.log(id);
+    console.log("gdfgfd"+id);
     const prescription = await Prescription.findOne({bookingid:id})
     console.log("hghgfhf"+prescription);
     res.json(prescription)

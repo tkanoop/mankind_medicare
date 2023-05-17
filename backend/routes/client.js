@@ -9,13 +9,13 @@ router.post('/addClient',clientController.addClient)
 router.post('/submit',clientController.submit)
 router.get('/getUser',clientController.getUser)
 router.get('/getBooking',clientController.getBooking)
-router.get('/cancelBooking/:id',clientController.cancelBooking)
+router.post('/cancelBooking/:id',clientController.cancelBooking)
 router.get('/getPrescription/:id',clientController.getPrescription)
-
+router.post('/bookingtime/:id/:departmentid',clientController.bookedtimes)
 router.use(requireAuth)
 // router.use(blockClient)
 
-router.get('/getdoctor/:id',clientController.getdoctor)
+router.post('/getdoctor/:id',clientController.getdoctor)
 router.get('/getDepartment',clientController.getDepartment)
 
 router.get('/getDoctors',clientController.getDoctors)

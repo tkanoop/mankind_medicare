@@ -19,10 +19,15 @@ const bookingSchema = Schema({
     type: String,
     required: true,
   },
-  starting_time: {
-    type: String,
+  timebooked: {
+    type: [String],
+   
     
    
+  },
+  starting_time: {
+    type:String,
+    required:true
   },
 
   status: {

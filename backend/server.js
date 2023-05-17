@@ -6,7 +6,7 @@ const morgan=require('morgan')
 const clientRoutes=require('./routes/client')
 const adminRoutes= require('./routes/admin')
 const doctorRoutes=require('./routes/doctor')
-const requireAuth = require('./middleware/requireAuth')
+
 dotenv.config()
 app.use(express.json())
 app.use(morgan('dev'))
@@ -37,6 +37,8 @@ app.use(
 app.use('/backend/api/client',clientRoutes)
 app.use('/backend/api/admin',adminRoutes)
 app.use('/backend/api/doctor',doctorRoutes)
+
+
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {

@@ -5,13 +5,17 @@ import TimeSlotBookingPage from '../../components/TimeSlotBookingPage'
 import { useLocation } from 'react-router-dom'
 
 function BookThisDoctor() {
-  const location=useLocation()
-  const id =new URLSearchParams(location.search).get('id');
-  const departmentid=new URLSearchParams(location.search).get('department')
+
+  const location = useLocation();
+  const { id, title, image, content, departmentId,time,speciality } = location.state;
+
+
+
   return (
     <>
     <Nav/>
-    <TimeSlotBookingPage id={id} departmentid={departmentid}/>
+    <TimeSlotBookingPage id={id} departmentid={departmentId} title={title} image={image} content={content}
+    departmentId = {departmentId} time={time} speciality={speciality}/>
     <Footer/>
     </>
   )

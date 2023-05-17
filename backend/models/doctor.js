@@ -45,6 +45,10 @@ password:{
 status:{
     type:Boolean,
     default:true
+},
+timeslots:{
+    type: [String],
+    
 }
 
 
